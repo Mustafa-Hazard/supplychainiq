@@ -3,6 +3,7 @@ from app.database import SessionLocal, engine, Base
 from app.models.threat import Threat
 from app.services.threat_sources import fetch_otx, fetch_kev
 from app.services.tagging import tag_threat
+from app.services.scoring import calculate_priority
 
 
 def run_ingest():
@@ -29,6 +30,14 @@ def run_ingest():
         tags = tag_threat(item.get("title"), item.get("description"))
         tags_str = ",".join(tags) if tags else ""
 
+        date_for_scoring = item.get("date_added") or item.get("created")
+        score_result = calculate_priority(
+            source=item.get("source"),
+            tags=tags_str,
+            date_str=date_for_scoring,
+            ransomware_use=item.get("ransomware_use"),
+        )
+
         existing = db.query(Threat).filter(
             Threat.external_id == item.get("external_id")
         ).first()
@@ -37,6 +46,7 @@ def run_ingest():
             existing.tags = tags_str
             existing.title = item.get("title")
             existing.description = item.get("description")
+            existing.priority_score = score_result["priority_score"]
             updated += 1
         else:
             new_threat = Threat(
@@ -45,6 +55,7 @@ def run_ingest():
                 title=item.get("title"),
                 description=item.get("description"),
                 tags=tags_str,
+                priority_score=score_result["priority_score"],
                 pulled_at=datetime.now(timezone.utc),
             )
             db.add(new_threat)
