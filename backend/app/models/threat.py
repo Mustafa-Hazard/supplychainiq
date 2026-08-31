@@ -11,5 +11,6 @@ class Threat(Base):
     title = Column(String)
     description = Column(Text)
     indicators = Column(Text)
+    tags = Column(Text)
     published_at = Column(DateTime, nullable=True)
     pulled_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
