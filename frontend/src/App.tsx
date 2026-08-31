@@ -1,9 +1,14 @@
+import Header from './components/Header'
+
 function App() {
   return (
-    <div className="min-h-screen bg-[#12181F] flex items-center justify-center">
-      <div className="bg-[#EDEAE2] border-2 border-[#C4551C] px-8 py-6 rotate-[-1deg]">
-        <p className="text-[#12181F] font-mono text-sm">tailwind v4 — wired up</p>
-      </div>
+    <div className="min-h-screen bg-[#12181F]">
+      <Header />
+      <main className="max-w-[1150px] mx-auto px-6 py-10">
+        <p className="font-mono text-sm text-[#8A8578]">
+          threat ledger goes here
+        </p>
+      </main>
     </div>
   )
 }
