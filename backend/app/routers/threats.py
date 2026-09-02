@@ -1,6 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
 import requests
 from app.services.threat_sources import fetch_otx, fetch_kev
+from app.database import get_db
+from app.models.threat import Threat
 
 router = APIRouter()
 
@@ -23,26 +26,30 @@ def get_kev():
     return {"count": len(threats), "threats": threats}
 
 
+def _serialize(t: Threat) -> dict:
+    return {
+        "id": t.id,
+        "source": t.source,
+        "external_id": t.external_id,
+        "title": t.title,
+        "description": t.description,
+        "indicators": t.indicators,
+        "tags": t.tags,
+        "priority_score": t.priority_score,
+        "published_at": t.published_at,
+        "pulled_at": t.pulled_at,
+    }
+
+
 @router.get("/threats")
-def get_threats():
-    combined = []
-    errors = []
-
-    try:
-        combined.extend(fetch_otx())
-    except requests.exceptions.RequestException as e:
-        errors.append(f"OTX failed: {e}")
-
-    try:
-        combined.extend(fetch_kev())
-    except requests.exceptions.RequestException as e:
-        errors.append(f"CISA KEV failed: {e}")
-
-    if not combined and errors:
-        raise HTTPException(status_code=502, detail="; ".join(errors))
+def get_threats(db: Session = Depends(get_db)):
+    threats = (
+        db.query(Threat)
+        .order_by(Threat.priority_score.desc())
+        .all()
+    )
 
     return {
-        "count": len(combined),
-        "sources_with_errors": errors if errors else None,
-        "threats": combined,
+        "count": len(threats),
+        "threats": [_serialize(t) for t in threats],
     }
