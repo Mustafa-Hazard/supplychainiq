@@ -103,10 +103,10 @@ function ThreatTable() {
             onChange={(e) => setTagFilter(e.target.value)}
             className="font-mono text-xs bg-transparent border border-[#8A8578]/40 rounded px-2 py-1 text-[#EDEAE2]"
           >
-            <option value="all">all tags</option>
-            <option value="untagged">untagged</option>
+            <option value="all" className="bg-[#1A1815] text-[#EDEAE2]">all tags</option>
+            <option value="untagged" className="bg-[#1A1815] text-[#EDEAE2]">untagged</option>
             {availableTags.map((tag) => (
-              <option key={tag} value={tag}>
+              <option key={tag} value={tag} className="bg-[#1A1815] text-[#EDEAE2]">
                 {tag}
               </option>
             ))}
