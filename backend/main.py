@@ -5,8 +5,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from app.routers import threats, summary, trends
+from app.database import Base, engine
+from app.models import threat  # noqa: F401 - ensures model is registered before create_all
 
 app = FastAPI(title="SupplyChainIQ")
+
+Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
