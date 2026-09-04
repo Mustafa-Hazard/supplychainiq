@@ -40,7 +40,7 @@ export default function TrendChart() {
   return (
     <div className="rounded-lg border border-[#8A8578]/20 p-6">
       <h2 className="text-lg font-semibold text-[#EDEAE2] mb-1">Weekly Threat Trends</h2>
-      <p className="font-mono text-xs text-[#8A8578] mb-4">OTX data is sparse (10 of 1697 threats) — most weeks show CISA KEV only</p>
+      <p className="font-mono text-xs text-[#8A8578] mb-4">OTX data is sparse (5 of 1700 threats) — most weeks show CISA KEV only</p>
 
       {error && (
         <p className="font-mono text-xs text-red-400">error: {error}</p>
