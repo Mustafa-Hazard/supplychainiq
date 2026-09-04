@@ -46,6 +46,16 @@ uvicorn main:app --reload --port 8000
 
 Full run instructions (including Docker, once that's built) will land in the final README.
 
+## Known Gotchas
+
+- **OTX data is sparse by design, not a bug.** The ingest uses AlienVault OTX's
+  `/pulses/subscribed` endpoint, which is non-historical — it only surfaces pulses
+  from subscribed feeds going forward, not a queryable historical archive. CISA KEV,
+  by contrast, is a static cumulative catalog with full history back to 2021. So the
+  vast majority of weeks in the trend chart legitimately show zero OTX activity; this
+  reflects the endpoint's limitations, not missing real-world threats. (As of the last
+  DB rebuild: 5 OTX rows across 3 of 226 weeks, out of 1700 total threats.)
+
 ## Why not just use a full SIEM?
 
 More detail coming once this section can point at the Splunk piece for comparison — short
