@@ -6,8 +6,8 @@ type SortKey = 'priority_score' | 'published_at'
 type SortDir = 'asc' | 'desc'
 
 function severityColor(score: number): string {
-  if (score >= 7) return 'bg-[#C97B4A]'
-  if (score >= 5) return 'bg-[#8A8578]'
+  if (score >= 6) return 'bg-[#C97B4A]'
+  if (score >= 4) return 'bg-[#8A8578]'
   return 'bg-[#8A8578]/40'
 }
 
