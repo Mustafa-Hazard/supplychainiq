@@ -9,18 +9,34 @@ OTX_URL = "https://otx.alienvault.com/api/v1/pulses/subscribed"
 KEV_URL = "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
 
 
-def fetch_otx():
+def fetch_otx(max_pulses: int = 100):
     # AlienVault OTX blocks the default python-requests User-Agent as basic
     # bot protection (returns 403 even with a valid key). A browser-like UA
     # is required.
+    #
+    # OTX also silently caps unpaginated requests at ~5 results per page
+    # (confirmed: 9000+ pulses available, only 5 returned with no limit/page
+    # param). We follow the API's own "next" pagination links up to
+    # max_pulses, rather than hardcoding a page count, since page size is
+    # not guaranteed to stay at 5.
     headers = {
         "X-OTX-API-KEY": OTX_API_KEY,
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
     }
-    response = requests.get(OTX_URL, headers=headers, timeout=10)
-    response.raise_for_status()
-    data = response.json()
-    pulses = data.get("results", [])
+
+    pulses = []
+    url = OTX_URL
+    params = {"limit": 50}
+
+    while url and len(pulses) < max_pulses:
+        response = requests.get(url, headers=headers, params=params, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+        pulses.extend(data.get("results", []))
+        url = data.get("next")
+        params = None  # "next" URL already contains query params
+
+    pulses = pulses[:max_pulses]
 
     return [
         {
