@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Playwright test artifacts (videos/screenshots regenerated on demand, not committed)
+test-results/
+*.mp4
