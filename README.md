@@ -10,7 +10,7 @@ Threat Intelligence Dashboard is an automated threat intelligence platform desig
 
 The platform continuously ingests real threat telemetry from AlienVault OTX and CISA's Known Exploited Vulnerabilities (KEV) catalog, tags threats by relevance to logistics/supply-chain systems, computes a priority score per threat, tracks multi-week trends, and produces automated executive briefings via a resilient multi-tier AI fallback pipeline.
 
-Built as a portfolio project for the SafeX Solutions internship program (Blue Team / SOC track).
+Built as a portfolio project for the Blue Team / SOC track.
 
 ## Table of Contents
 
