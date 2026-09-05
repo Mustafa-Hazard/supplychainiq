@@ -46,7 +46,6 @@ The platform continuously ingests real threat telemetry from AlienVault OTX and 
 - [x] React 19 + TypeScript + Tailwind CSS dashboard
 - [x] Interactive data visualization using Recharts
 - [x] Multi-container Docker & Docker Compose setup (`backend` + `frontend`)
-- [ ] Splunk HTTP Event Collector forwarding (deferred, optional secondary integration)
 
 ---
 
