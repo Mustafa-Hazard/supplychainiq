@@ -10,9 +10,13 @@ Threat Intelligence Dashboard is an automated threat intelligence platform desig
 
 The platform continuously ingests real threat telemetry from AlienVault OTX and CISA's Known Exploited Vulnerabilities (KEV) catalog, tags threats by relevance to logistics/supply-chain systems, computes a priority score per threat, tracks multi-week trends, and produces automated executive briefings via a resilient multi-tier AI fallback pipeline.
 
+Built as a portfolio project for the SafeX Solutions internship program (Blue Team / SOC track).
+
 ## Table of Contents
 
+- [Full Technical Report](#full-technical-report)
 - [Current Status](#current-status)
+- [Screenshots](#screenshots)
 - [Architecture](#architecture)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
@@ -22,16 +26,11 @@ The platform continuously ingests real threat telemetry from AlienVault OTX and 
 - [Engineering Challenges & Lessons Learned](#engineering-challenges--lessons-learned)
 - [License](#license)
 
-## Screenshots
+---
 
-**Overview — AI-generated daily briefing**
-![Overview](docs/screenshots/01-overview.png)
+## Full Technical Report
 
-**Threat inventory — sortable, filterable by tag**
-![Threats](docs/screenshots/02-threats-default.png)
-
-**Weekly threat trends**
-![Trends](docs/screenshots/05-trends.png)
+See [Threat-Intelligence-Dashboard-Report.docx](docs/Threat-Intelligence-Dashboard-Report.docx) for the complete write-up: problem context, architecture, engineering challenges, lessons learned, and the SafeX use-case integration.
 
 ---
 
@@ -46,6 +45,19 @@ The platform continuously ingests real threat telemetry from AlienVault OTX and 
 - [x] React 19 + TypeScript + Tailwind CSS dashboard
 - [x] Interactive data visualization using Recharts
 - [x] Multi-container Docker & Docker Compose setup (`backend` + `frontend`)
+
+---
+
+## Screenshots
+
+**Overview — AI-generated daily briefing**
+![Overview](docs/screenshots/01-overview.png)
+
+**Threat inventory — sortable, filterable by tag**
+![Threats](docs/screenshots/02-threats-default.png)
+
+**Weekly threat trends**
+![Trends](docs/screenshots/05-trends.png)
 
 ---
 
@@ -86,11 +98,11 @@ GET /threats    GET /trends       GET /summary
 
 ## Tech Stack
 
-* **Backend:** Python 3.11, FastAPI, SQLAlchemy, SQLite, Uvicorn
-* **Frontend:** React 19, TypeScript, Vite, Tailwind CSS, Recharts
-* **AI / LLM Orchestration:** Google Gemini API, Groq API, multi-tier fallback architecture
-* **Threat Intelligence Sources:** AlienVault OTX API, CISA Known Exploited Vulnerabilities (KEV) Catalog
-* **Containerization:** Docker, Docker Compose, Nginx Alpine
+- **Backend:** Python 3.11, FastAPI, SQLAlchemy, SQLite, Uvicorn
+- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS, Recharts
+- **AI / LLM Orchestration:** Google Gemini API, Groq API, multi-tier fallback architecture
+- **Threat Intelligence Sources:** AlienVault OTX API, CISA Known Exploited Vulnerabilities (KEV) Catalog
+- **Containerization:** Docker, Docker Compose, Nginx Alpine
 
 ---
 
@@ -115,6 +127,9 @@ GET /threats    GET /trends       GET /summary
 │   ├── public/
 │   ├── package.json
 │   └── Dockerfile
+├── docs/
+│   ├── screenshots/         # Dashboard screenshots used in this README
+│   └── Threat-Intelligence-Dashboard-Report.docx
 ├── docker-compose.yml
 ├── LICENSE
 └── README.md
@@ -141,14 +156,12 @@ docker compose up --build
 ```
 
 4. Access the services:
-* **Frontend Dashboard:** http://localhost:5173
-* **Backend API Docs:** http://localhost:8000/docs
-
----
+   - **Frontend Dashboard:** http://localhost:5173
+   - **Backend API Docs:** http://localhost:8000/docs
 
 ### Option 2: Running Locally
 
-#### 1. Backend Setup
+**Backend Setup**
 
 ```bash
 cd backend
@@ -171,7 +184,7 @@ Start the API server:
 uvicorn main:app --reload --port 8000
 ```
 
-#### 2. Frontend Setup
+**Frontend Setup**
 
 ```bash
 cd frontend
@@ -203,27 +216,26 @@ python check_keys.py         # Confirms required environment variables are set
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `GET` | `/threats` | Returns full list of ingested threats, priority scores, and tags |
-| `GET` | `/trends` | Aggregates weekly historical vulnerability volume across OTX and CISA KEV |
-| `GET` | `/summary` | Produces an executive threat briefing via the 3-tier fallback chain |
-| `GET` | `/` | Backend health check status |
+| Method | Endpoint   | Description                                                               |
+| ------ | ---------- | -------------------------------------------------------------------------- |
+| `GET`  | `/threats` | Returns full list of ingested threats, priority scores, and tags          |
+| `GET`  | `/trends`  | Aggregates weekly historical vulnerability volume across OTX and CISA KEV |
+| `GET`  | `/summary` | Produces an executive threat briefing via the 3-tier fallback chain       |
+| `GET`  | `/`        | Backend health check status                                               |
 
 ---
 
 ## Engineering Challenges & Lessons Learned
 
-1. **Cold-Start SQLite Initialization (`create_all` race condition):**
-Early iterations encountered 500 errors when querying `/threats` against a fresh database because models were not registered prior to creation. Registering the models and invoking `Base.metadata.create_all(bind=engine)` directly inside `main.py` ensured schema creation is guaranteed on startup.
-2. **Scoped CORS vs. Browser Preflight:**
-Frontend queries in development hung in a `(pending)` state without browser console errors. Explicitly configuring FastAPI's `CORSMiddleware` scoped to the Vite origin resolved browser preflight rejections.
-3. **Multi-Source Ingestion Resilience:**
-External intelligence APIs can return HTML error pages (e.g., Cloudflare 502 Bad Gateway) instead of valid JSON. Catching `requests.exceptions.RequestException` (which covers JSON decode failures) around each source individually ensures a failure in one provider (like OTX) doesn't abort ingestion for healthy sources (like CISA KEV).
-4. **Sparse Historical Feeds (OTX vs. CISA KEV):**
-The AlienVault OTX `/pulses/subscribed` endpoint is non-historical; it only delivers pulses going forward from active subscriptions. CISA KEV, by contrast, is a cumulative catalog dating back to 2021. The trend view accounts for this split so sparse OTX weeks are not misread as data loss.
-5. **Recharts X-Axis Tick Collision:**
-Plotting a large number of historical weeks created unreadable, overlapping timestamps. Custom tick formatters and angled tick anchors preserved visual clarity across screen widths.
+1. **Cold-Start SQLite Initialization (`create_all` race condition):** Early iterations encountered 500 errors when querying `/threats` against a fresh database because models were not registered prior to creation. Registering the models and invoking `Base.metadata.create_all(bind=engine)` directly inside `main.py` ensured schema creation is guaranteed on startup.
+
+2. **Scoped CORS vs. Browser Preflight:** Frontend queries in development hung in a `(pending)` state without browser console errors. Explicitly configuring FastAPI's `CORSMiddleware` scoped to the Vite origin resolved browser preflight rejections.
+
+3. **Multi-Source Ingestion Resilience:** External intelligence APIs can return HTML error pages (e.g., Cloudflare 502 Bad Gateway) instead of valid JSON. Catching `requests.exceptions.RequestException` (which covers JSON decode failures) around each source individually ensures a failure in one provider (like OTX) doesn't abort ingestion for healthy sources (like CISA KEV).
+
+4. **Sparse Historical Feeds (OTX vs. CISA KEV):** The AlienVault OTX `/pulses/subscribed` endpoint is non-historical; it only delivers pulses going forward from active subscriptions. CISA KEV, by contrast, is a cumulative catalog dating back to 2021. The trend view accounts for this split so sparse OTX weeks are not misread as data loss.
+
+5. **Recharts X-Axis Tick Collision:** Plotting a large number of historical weeks created unreadable, overlapping timestamps. Custom tick formatters and angled tick anchors preserved visual clarity across screen widths.
 
 ---
 
