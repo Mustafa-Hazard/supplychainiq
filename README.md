@@ -22,6 +22,17 @@ The platform continuously ingests real threat telemetry from AlienVault OTX and 
 - [Engineering Challenges & Lessons Learned](#engineering-challenges--lessons-learned)
 - [License](#license)
 
+## Screenshots
+
+**Overview — AI-generated daily briefing**
+![Overview](docs/screenshots/01-overview.png)
+
+**Threat inventory — sortable, filterable by tag**
+![Threats](docs/screenshots/02-threats-default.png)
+
+**Weekly threat trends**
+![Trends](docs/screenshots/05-trends.png)
+
 ---
 
 ## Current Status
