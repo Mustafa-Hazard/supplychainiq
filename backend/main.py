@@ -8,7 +8,7 @@ from app.routers import threats, summary, trends
 from app.database import Base, engine
 from app.models import threat  # noqa: F401 - ensures model is registered before create_all
 
-app = FastAPI(title="SupplyChainIQ")
+app = FastAPI(title="Threat Intelligence Dashboard")
 
 Base.metadata.create_all(bind=engine)
 
@@ -25,4 +25,4 @@ app.include_router(trends.router)
 
 @app.get("/")
 def root():
-    return {"status": "SupplyChainIQ backend running"}
+    return {"status": "Threat Intelligence Dashboard backend running"}

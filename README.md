@@ -1,4 +1,4 @@
-# SupplyChainIQ
+# Threat Intelligence Dashboard
 
 Threat intelligence dashboard focused on systems relevant to logistics and supply chain
 security — fleet/GPS software, warehouse IoT, ERP, port/shipping systems. Pulls real threat
