@@ -29,7 +29,7 @@ def fetch_otx(max_pulses: int = 100):
     params = {"limit": 50}
 
     while url and len(pulses) < max_pulses:
-        response = requests.get(url, headers=headers, params=params, timeout=10)
+        response = requests.get(url, headers=headers, params=params, timeout=20)
         response.raise_for_status()
         data = response.json()
         pulses.extend(data.get("results", []))
@@ -52,7 +52,7 @@ def fetch_otx(max_pulses: int = 100):
 
 
 def fetch_kev():
-    response = requests.get(KEV_URL, timeout=10)
+    response = requests.get(KEV_URL, timeout=20)
     response.raise_for_status()
     data = response.json()
     vulns = data.get("vulnerabilities", [])
