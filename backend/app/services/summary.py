@@ -25,7 +25,7 @@ def get_ai_summary(prompt: str, break_gemini: bool = False) -> tuple[str, str]:
     try:
         from google import genai
         client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-        model_name = "gemini-nonexistent-model" if break_gemini else "gemini-3.6-flash"
+        model_name = "gemini-nonexistent-model" if break_gemini else "gemini-2.5-flash"
         interaction = client.interactions.create(model=model_name, input=prompt)
         return interaction.output_text.strip(), "gemini"
     except Exception as e:
