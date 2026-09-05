@@ -10,7 +10,13 @@ KEV_URL = "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulner
 
 
 def fetch_otx():
-    headers = {"X-OTX-API-KEY": OTX_API_KEY}
+    # AlienVault OTX blocks the default python-requests User-Agent as basic
+    # bot protection (returns 403 even with a valid key). A browser-like UA
+    # is required.
+    headers = {
+        "X-OTX-API-KEY": OTX_API_KEY,
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
+    }
     response = requests.get(OTX_URL, headers=headers, timeout=10)
     response.raise_for_status()
     data = response.json()
