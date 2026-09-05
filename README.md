@@ -1,8 +1,26 @@
 # Threat Intelligence Dashboard
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Python](https://img.shields.io/badge/python-3.11-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg)
+![React](https://img.shields.io/badge/React-19-61DAFB.svg)
+![Docker](https://img.shields.io/badge/docker-compose-2496ED.svg)
+
 Threat Intelligence Dashboard is an automated threat intelligence platform designed to monitor vulnerabilities and threat feeds affecting logistics, warehouse IoT, ERP, and critical shipping infrastructure.
 
 The platform continuously ingests real threat telemetry from AlienVault OTX and CISA's Known Exploited Vulnerabilities (KEV) catalog, tags threats by relevance to logistics/supply-chain systems, computes a priority score per threat, tracks multi-week trends, and produces automated executive briefings via a resilient multi-tier AI fallback pipeline.
+
+## Table of Contents
+
+- [Current Status](#current-status)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Testing](#testing)
+- [API Endpoints](#api-endpoints)
+- [Engineering Challenges & Lessons Learned](#engineering-challenges--lessons-learned)
+- [License](#license)
 
 ---
 
